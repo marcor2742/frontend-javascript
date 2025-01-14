@@ -26,12 +26,27 @@
 .expandable-sidebar-container {
   display: flex;
   height: 100%;
-  background-color: none;
+  transition: width 0.3s;
 }
 
-.expandable-sidebar {
-  width: 200px;
+.sidebar {
+  width: 60px;
   background-color: #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.chat-container {
+  display: none;
+  width: 240px;
+  background-color: #f8f9fa;
+  padding: 10px;
+}
+
+.chat-container.open {
+  display: block;
 }
 
 .content {
@@ -42,7 +57,6 @@
   justify-content: space-evenly;
   align-content: flex-start;
   width: 100%;
-  /*height: calc(100% - 20px);*/
   padding: 10px;
   gap: 10px;
   overflow-y: auto;

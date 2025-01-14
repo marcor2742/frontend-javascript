@@ -14,7 +14,6 @@ import {
 import Chat from "../Chat/Chat";
 import "./ExpandableSidebar.css";
 import AddChat from "../Chat/AddChat";
-import { ChatBubble } from "./ChatBubble";
 
 const getChatRooms = async () => {
 	const user_id = localStorage.getItem("user_id");
@@ -272,15 +271,6 @@ export function ExpandableSidebar() {
 									className="chat-item"
 									ref={(el) => (chatRefs.current[chat.id] = el)}
 									>
-										{/*<div className="add-chat">
-											<input type="text" placeholder="Nome del gruppo" />
-											<input type="text" placeholder="Descrizione" />
-											<input
-												type="text"
-												placeholder="Aggiungi membri con userID"
-											/>
-											<button onClick={handleAddSidebar}>Aggiungi</button>
-										</div>*/}
 										{isAddChat(chat.id) ? (
 											<AddChat />
 										) : (
@@ -322,25 +312,6 @@ export function ExpandableSidebar() {
 															className="chat-item-content"
 														>
 															<Chat roomID={chat.id} isSingleChat={chat.type === "single"} />
-															{/*<div className="chat-messages">
-									{/* bubble messages */}
-															{/*</div>*/}
-															{/*							<input
-								<div className="chats-input">
-									type="text"
-									placeholder="Type a message..."
-									value={newMessage}
-									onChange={(e) =>
-										setNewMessage(e.target.value)
-									}
-									/>
-									<button
-									onClick={() => handleSendMessage(chat.id)}
-									>
-									<Send className="icon" />
-									</button>
-								</div>
-		*/}
 														</motion.div>
 													)}
 												</AnimatePresence>
