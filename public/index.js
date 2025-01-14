@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             '/': () => navigateTo('/login'),
             '/login': () => loadScript('login.js', 'renderLogin'),
             '/register': () => loadScript('register.js', 'renderRegister'),
-            '/home': renderHome,
+            '/home': () => loadScript('home.js', 'renderHome'),
             '/mine': () => window.location.href = 'https://minesweeper.online/it/'
         };
 
@@ -29,10 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(script);
     }
 
-    function renderHome() {
-        document.querySelector('.App').innerHTML = '<h2>Home Page</h2>';
-    }
-
     document.querySelector('.App').innerHTML = `
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Navbar</a>
@@ -40,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="/login" data-link>Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="/register" data-link>Register</a></li>
-                    <!-- <li class="nav-item"><a class="nav-link" href="/home" data-link>Home</a></li> -->
+                    <li class="nav-item"><a class="nav-link" href="/home" data-link>Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mine" data-link>Mine</a></li>
                 </ul>
             </div>
@@ -58,5 +54,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.onpopstate = handleRoute;
     handleRoute();
 
-	window.navigateTo = navigateTo;
+    window.navigateTo = navigateTo;
 });
