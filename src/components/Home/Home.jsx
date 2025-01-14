@@ -1,22 +1,13 @@
 import React, { useState } from "react";
 import "./index.css";
-import SideChats from "../Chat/SideChats";
-import Button from "../Button/Button";
 import Profile from "../Profile/Profile";
 import logo from "./logo.png";
-import settings from "./settings.png";
-import chatImg from "./chat.png";
 import propic from "../Profile/propic.jpeg";
 import close from "./close.png";
 import TaskAvaiable from "../TaskAvaiable/TaskAvaiable";
 import TaskActive from "../TaskActive/TaskActive";
 import { ExpandableSidebar } from "../ExpandableSidebar/ExpandableSidebar";
-import Grid from "@mui/material/Grid2";
 import Notification from "../Notification/Notification";
-
-//import WebSocketComponent from '../WebSocket/WebSocket';
-// import { Nav, navbar } from 'react-bootstrap';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Home = () => {
   const [isDivVisible, setIsDivVisible] = useState(true);
@@ -43,7 +34,6 @@ const Home = () => {
             <img src={close} alt="settings" className="propic-image" />
           )}
         </button>
-        {/* Aggiungi il contenuto della tua home page qui */}
       </div>
       <div className="undernavbar">
         <div className="expandable-sidebar-container">
@@ -53,13 +43,6 @@ const Home = () => {
           />
         </div>
 
-        {/*				<div className="sidebar">
-					<button className="chat-buttons" onClick={toggleDiv}>
-						<img src={chatImg} alt="chat" className="chat-image" />
-					</button>
-				</div>
-				{isDivVisible && <SideChats />}
-*/}
         <div className={`content ${isDivVisible ? "content-reduced" : ""}`}>
           {isProfileVisible && <Profile />}
           <div className="task-container">
