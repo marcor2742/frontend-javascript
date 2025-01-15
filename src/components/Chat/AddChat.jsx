@@ -1,7 +1,5 @@
 import "./AddChat.css";
 import React, { useState } from "react";
-import Input from "../Input/Input";
-import Button from "../Button/Button";
 import { getCookie } from "../Cookie.jsx";
 
 export default function AddChat() {

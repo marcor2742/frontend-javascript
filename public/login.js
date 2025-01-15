@@ -74,11 +74,11 @@ async function loginUser(email, password, csrftoken) {
             return true;
         } else {
             const errorData = await response.json();
-            console.error('Errore nella risposta del server:', errorData);
+            console.error('Errore login:', errorData);
             return false;
         }
     } catch (error) {
-        console.error('Errore nella richiesta:', error);
+        console.error('Exception login:', error);
         return false;
     }
 }

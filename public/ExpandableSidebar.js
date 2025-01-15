@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
     async function getChatRooms() {
         const user_id = localStorage.getItem("user_id");
         const token = localStorage.getItem('token');
+        console.log("/-----ExpandableSidebar.js-----\\");
         console.log("user_id in sidechat: ", user_id);
-        console.log("Token inviato nell'header Authorization:", token);
+        console.log("Token getChatRooms:", token);
         console.log(`http://localhost:8001/chat/chat_rooms/getchat/?users=${user_id}`);
+        console.log("\\_____ExpandableSidebar.js_____/");
         try {
             const response = await fetch(
                 `http://localhost:8001/chat/chat_rooms/getchat/?user_id=${user_id}`,
@@ -53,12 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="bi bi-shuffle"></i>
                 </button>
             </div>
-            <div id="chatContainer" class="chat-container">
-                <div class="chat-item bg-light p-2 mb-2">Add Chat</div>
-                <div class="chat-item bg-light p-2 mb-2">Single Chat</div>
-                <div class="chat-item bg-light p-2 mb-2">Group Chat</div>
-                <div class="chat-item bg-light p-2 mb-2">Random Chat</div>
-            </div>
+            <div id="chatContainer" class="chat-container"></div>
         `;
 
         const toggleChatButton = document.getElementById('toggleChatButton');
@@ -75,7 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         document.getElementById('createChatButton').addEventListener('click', function() {
-            alert('Create Chat clicked');
+            const addChatContainer = renderAddChat();
+            chatContainer.innerHTML = '';
+            chatContainer.appendChild(addChatContainer);
         });
 
         document.getElementById('singleChatButton').addEventListener('click', function() {
@@ -88,6 +87,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('randomChatButton').addEventListener('click', function() {
             alert('Random Chat clicked');
+        });
+
+        // Fetch chat rooms and render them
+        getChatRooms().then(chats => {
+            if (chats) {
+                chats.forEach(chat => {
+                    const chatItem = document.createElement('div');
+                    chatItem.className = 'chat-item bg-light p-2 mb-2';
+                    chatItem.innerText = chat.room_name;
+                    chatContainer.appendChild(chatItem);
+                });
+            }
         });
     }
 

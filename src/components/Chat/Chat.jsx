@@ -1,8 +1,6 @@
 import "./Chat.css";
 import React, { useState, useEffect, useRef } from "react";
 import useWebSocket from "react-use-websocket";
-import Input from "../Input/Input";
-import Button from "../Button/Button";
 import { ChatBubble } from "../ExpandableSidebar/ChatBubble";
 import { Send } from "lucide-react";
 
