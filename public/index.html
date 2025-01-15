@@ -15,21 +15,41 @@
     <link rel="manifest" href="/favicon/site.webmanifest">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="chat/ExpandableSidebar.css">
+    <link rel="stylesheet" href="chat/SideChat.css">
+    <link rel="stylesheet" href="chat/Chat.css">
+    <link rel="stylesheet" href="chat/AddChat.css">
+    <link rel="stylesheet" href="chat/Message.css">
 </head>
 <body>
-    <div class="App"></div>
+    <div class="App">
+        <!-- Aggiungi questo nel tuo file HTML o nel file JavaScript che genera il contenuto della pagina -->
+        <div class="add-chat">
+            <form>
+                <input type="text" name="room_name" placeholder="Nome del gruppo" />
+                <input type="text" name="room_description" placeholder="Descrizione" />
+                <input type="text" name="user_ids" placeholder="Aggiungi membri con userID" />
+                <button type="submit">Add</button>
+            </form>
+        </div>
+        <div class="scrollable-content">
+			<div class="sidechat"></div>
+		</div>
+    </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Custom JS -->
+    <script src="chat/utils.js"></script>
     <script src="index.js"></script>
     <script src="login.js"></script>
     <script src="register.js"></script>
     <script src="home.js"></script>
-    <script src="ExpandableSidebar.js"></script>
-    <script src="Chat.js"></script>
-    <script src="ChatBubble.js"></script>
-    <script src="AddChat.js"></script>
+    <script src="chat/ExpandableSidebar.js"></script>
+    <script src="chat/SideChats.js"></script>
+    <script src="chat/Chat.js"></script>
+    <script src="chat/AddChat.js"></script>
+    <script src="chat/Message.js"></script>
 </body>
 </html>

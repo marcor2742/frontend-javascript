@@ -24,8 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 userIdsArray.push(creator);
             }
 
-            console.log('Utenti:', userIdsArray);
-
             try {
                 const response = await fetch('http://localhost:8001/chat/chat_rooms/create/', {
                     method: 'POST',

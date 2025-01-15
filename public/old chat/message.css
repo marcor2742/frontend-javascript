@@ -1,0 +1,30 @@
+.message {
+    display: flex;
+    align-items: flex-start;
+    margin: 10px 0;
+}
+
+.message.personal {
+    justify-content: flex-end;
+}
+
+.propic {
+    background-color: #5d5d5d;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 100%;
+    margin-right: 10px;
+}
+
+.message-content {
+    background-color: #f3f4f6;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+p {
+    margin: 0;
+}

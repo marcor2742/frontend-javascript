@@ -1,12 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
+    let currentOpenChat = null; // Variabile per tenere traccia della chat aperta
+
     async function getChatRooms() {
         const user_id = localStorage.getItem("user_id");
         const token = localStorage.getItem('token');
-        console.log("/-----ExpandableSidebar.js-----\\");
-        console.log("user_id in sidechat: ", user_id);
-        console.log("Token getChatRooms:", token);
-        console.log(`http://localhost:8001/chat/chat_rooms/getchat/?users=${user_id}`);
-        console.log("\\_____ExpandableSidebar.js_____/");
         try {
             const response = await fetch(
                 `http://localhost:8001/chat/chat_rooms/getchat/?user_id=${user_id}`,
@@ -21,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("Risposta dal server:", data);
                 localStorage.setItem("chat_rooms", JSON.stringify(data));
                 return data;
             } else {
@@ -77,8 +73,32 @@ document.addEventListener('DOMContentLoaded', function() {
             chatContainer.appendChild(addChatContainer);
         });
 
-        document.getElementById('singleChatButton').addEventListener('click', function() {
-            alert('Single Chat clicked');
+        document.getElementById('singleChatButton').addEventListener('click', async function() {
+            const chats = await getChatRooms();
+            if (chats) {
+                chatContainer.innerHTML = '';
+                chats.forEach(chat => {
+                    const chatItem = document.createElement('div');
+                    chatItem.className = 'chat-item bg-light p-2 mb-2';
+                    chatItem.innerText = chat.room_name;
+                    chatItem.addEventListener('click', function() {
+                        if (currentOpenChat === chat.room_id) {
+                            chatItem.classList.remove('open'); // Rimuovi la classe 'open' se la chat è già aperta
+                            currentOpenChat = null;
+                            chatContainer.innerHTML = ''; // Chiudi la chat
+                        } else {
+                            if (currentOpenChat !== null) {
+                                document.querySelector(`.chat-item[data-room-id="${currentOpenChat}"]`).classList.remove('open');
+                            }
+                            chatItem.classList.add('open'); // Aggiungi la classe 'open' alla chat corrente
+                            renderChat(chat.room_id, true);
+                            currentOpenChat = chat.room_id;
+                        }
+                    });
+                    chatItem.setAttribute('data-room-id', chat.room_id);
+                    chatContainer.appendChild(chatItem);
+                });
+            }
         });
 
         document.getElementById('groupChatButton').addEventListener('click', function() {
@@ -96,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const chatItem = document.createElement('div');
                     chatItem.className = 'chat-item bg-light p-2 mb-2';
                     chatItem.innerText = chat.room_name;
+                    chatItem.setAttribute('data-room-id', chat.room_id);
                     chatContainer.appendChild(chatItem);
                 });
             }
