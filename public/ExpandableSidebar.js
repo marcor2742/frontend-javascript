@@ -84,7 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 	
 			document.getElementById('singleChatButton').addEventListener('click', function() {
-				alert('Single Chat clicked');
+				renderChatItem({
+					id: '5',
+					name: 'Eve',
+					lastMessage: 'Thanks for your help!',
+					type: 'single'
+				});
 			});
 	
 			document.getElementById('groupChatButton').addEventListener('click', function() {
@@ -110,3 +115,90 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 		window.renderExpandableSidebar = renderExpandableSidebar;
 	});
+
+		function renderChatItem(chat) {
+		const chatContainer = document.querySelector('.chat-container');
+		const chatItem = document.createElement('div');
+		chatItem.className = 'chat-item';
+	
+		chatItem.innerHTML = `
+			<div class="chat-item-header">
+				<div class="chat-item-header-content">
+					<div class="avatar">
+						<div class="avatar-placeholder"></div>
+					</div>
+					<div class="chat-item-info">
+						<div class="chat-item-name">${chat.name}</div>
+						<div class="chat-item-message">${chat.lastMessage}</div>
+					</div>
+					<div class="chat-item-icon">
+						<i class="bi bi-chevron-down"></i>
+					</div>
+				</div>
+			</div>
+			<div class="chat-item-content">
+				<div class="scrollable-content"></div>
+				<form class="chats-input">
+					<input type="text" placeholder="Type a message" />
+					<button type="submit">
+						<i class="bi bi-send"></i>
+					</button>
+				</form>
+			</div>
+		`;
+	
+		chatContainer.appendChild(chatItem);
+	
+		const chatItemHeader = chatItem.querySelector('.chat-item-header');
+		const chatItemContent = chatItem.querySelector('.chat-item-content');
+		const chatItemIcon = chatItem.querySelector('.chat-item-icon i');
+	
+		chatItemHeader.addEventListener('click', function() {
+			const isOpen = chatItemContent.style.display === 'block';
+			chatItemContent.style.display = isOpen ? 'none' : 'block';
+			chatItemIcon.className = isOpen ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+		});
+	
+		const chatsInput = chatItem.querySelector('.chats-input');
+		const inputField = chatsInput.querySelector('input');
+		const sendButton = chatsInput.querySelector('button');
+	
+		chatsInput.addEventListener('submit', function(e) {
+			e.preventDefault();
+			const message = inputField.value;
+			if (message.trim() !== "") {
+				const messageData = {
+					sender: localStorage.getItem("user_username"),
+					date: new Date().toLocaleTimeString(),
+					message: message,
+					isSingleChat: chat.type === 'single'
+				};
+				const chatBubble = renderChatBubble(messageData);
+				chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+				inputField.value = '';
+			}
+		});
+	}
+	
+	function renderChatBubble({ sender, date, message, isSingleChat }) {
+		const user_name = localStorage.getItem("user_username");
+		const isSenderMe = user_name === sender;
+	
+		const chatBubble = document.createElement('div');
+		chatBubble.className = `chat-bubble ${isSenderMe ? "true" : "false"}`;
+		chatBubble.innerHTML = `
+			${!isSingleChat && !isSenderMe ? `
+				<div class="avatar">
+					<div class="avatar-placeholder"></div>
+					<div class="date under">${date}</div>
+				</div>
+			` : ''}
+			<div class="chat-content ${isSenderMe ? "true" : ""}">
+				${!isSingleChat && !isSenderMe ? `<div class="username">${sender}</div>` : ''}
+				<div class="message">${message}</div>
+				${isSingleChat || isSenderMe ? `<div class="date ${isSenderMe ? "true" : "false"}">${date}</div>` : ''}
+			</div>
+		`;
+	
+		return chatBubble;
+	}
