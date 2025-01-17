@@ -192,6 +192,8 @@ function renderChatItem(chat) {
 
             socket.onclose = () => {
                 console.log(`WebSocket connection closed for chat room ${chat.id}`);
+                // Cancella i messaggi quando il WebSocket viene chiuso
+                chatItem.querySelector('.scrollable-content').innerHTML = '';
             };
 
             socket.onerror = (error) => {
