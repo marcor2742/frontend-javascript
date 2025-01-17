@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const sendButton = chatsInput.querySelector('button');
 
         let chat = [];
+        let socket;
 
         async function fetchMessages() {
             const token = localStorage.getItem("token");
@@ -61,6 +62,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        function connectWebSocket() {
+            const token = localStorage.getItem("token");
+            socket = new WebSocket(`ws://127.0.0.1:8001/ws/chat/${roomID}/?token=${token}`);
+
+            socket.onopen = () => {
+                console.log("WebSocket connection opened");
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("Messaggio ricevuto:", data);
+                chat.push(data);
+                renderMessages();
+            };
+
+            socket.onclose = () => {
+                console.log("WebSocket connection closed");
+            };
+
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+        }
+
         chatsInput.addEventListener('submit', function(e) {
             e.preventDefault();
             const message = inputField.value;
@@ -72,13 +97,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     timestamp: new Date().toISOString(),
                     sender: localStorage.getItem("user_username"),
                 };
-                chat.push(messageData);
-                renderMessages();
+                socket.send(JSON.stringify(messageData));
                 inputField.value = '';
             }
         });
 
         fetchMessages();
+        connectWebSocket();
     }
 
     window.renderChat = renderChat;
