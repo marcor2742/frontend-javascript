@@ -78,8 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 addChatContainer = null;
             } else {
                 addChatContainer = renderAddChat();
-                chatContainer.innerHTML = '';
-                chatContainer.appendChild(addChatContainer);
+                chatContainer.insertBefore(addChatContainer, chatContainer.firstChild);
             }
         });
 
@@ -155,7 +154,7 @@ function renderChatItem(chat) {
         </div>
     `;
 
-    chatContainer.appendChild(chatItem);
+    chatContainer.insertBefore(chatItem, chatContainer.firstChild);
 
     const chatItemHeader = chatItem.querySelector('.chat-item-header');
     const chatItemContent = chatItem.querySelector('.chat-item-content');
