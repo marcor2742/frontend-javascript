@@ -115,35 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         lastMessage: chat.last_message,
                         type: chat.type
                     });
-
-                    // Apri il WebSocket per ogni chat room
-                    const token = localStorage.getItem("token");
-                    const socket = new WebSocket(`ws://127.0.0.1:8001/ws/chat/${chat.room_id}/?token=${token}`);
-
-                    socket.onopen = () => {
-                        console.log(`WebSocket connection opened for chat room ${chat.room_id}`);
-                    };
-
-                    socket.onmessage = (event) => {
-                        const data = JSON.parse(event.data);
-                        console.log(`Messaggio ricevuto per chat room ${chat.room_id}:`, data);
-                        // Aggiungi il messaggio alla chat room corrispondente
-                        const chatBubble = renderChatBubble({
-                            sender: data.sender,
-                            date: new Date(data.timestamp).toLocaleTimeString(),
-                            message: data.message,
-                            isSingleChat: chat.type === 'single'
-                        });
-                        document.querySelector(`.chat-item[data-id="${chat.room_id}"] .scrollable-content`).appendChild(chatBubble);
-                    };
-
-                    socket.onclose = () => {
-                        console.log(`WebSocket connection closed for chat room ${chat.room_id}`);
-                    };
-
-                    socket.onerror = (error) => {
-                        console.error(`WebSocket error for chat room ${chat.room_id}:`, error);
-                    };
                 });
             }
         });
@@ -173,7 +144,7 @@ function renderChatItem(chat) {
                 </div>
             </div>
         </div>
-        <div class="chat-item-content">
+        <div class="chat-item-content" style="display: none;">
             <div class="scrollable-content"></div>
             <form class="chats-input">
                 <input type="text" placeholder="Type a message" />
@@ -190,10 +161,80 @@ function renderChatItem(chat) {
     const chatItemContent = chatItem.querySelector('.chat-item-content');
     const chatItemIcon = chatItem.querySelector('.chat-item-icon i');
 
-    chatItemHeader.addEventListener('click', function() {
+    let socket = null;
+
+    chatItemHeader.addEventListener('click', async function() {
         const isOpen = chatItemContent.style.display === 'block';
         chatItemContent.style.display = isOpen ? 'none' : 'block';
         chatItemIcon.className = isOpen ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+
+        if (!isOpen) {
+            // Apri il WebSocket per la chat room
+            const token = localStorage.getItem("token");
+            socket = new WebSocket(`ws://127.0.0.1:8001/ws/chat/${chat.id}/?token=${token}`);
+
+            socket.onopen = () => {
+                console.log(`WebSocket connection opened for chat room ${chat.id}`);
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log(`Messaggio ricevuto per chat room ${chat.id}:`, data);
+                // Aggiungi il messaggio alla chat room corrispondente
+                const chatBubble = renderChatBubble({
+                    sender: data.sender,
+                    date: new Date(data.timestamp).toLocaleTimeString(),
+                    message: data.message,
+                    isSingleChat: chat.type === 'single'
+                });
+                chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+            };
+
+            socket.onclose = () => {
+                console.log(`WebSocket connection closed for chat room ${chat.id}`);
+            };
+
+            socket.onerror = (error) => {
+                console.error(`WebSocket error for chat room ${chat.id}:`, error);
+            };
+
+            // Fetch old messages
+            try {
+                const response = await fetch(
+                    `http://127.0.0.1:8001/chat/chat_rooms/${chat.id}/get_message/`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": localStorage.getItem("csrftoken"),
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    }
+                );
+                if (response.ok) {
+                    const data = await response.json();
+                    data.forEach(msg => {
+                        const chatBubble = renderChatBubble({
+                            sender: msg.sender,
+                            date: new Date(msg.timestamp).toLocaleTimeString(),
+                            message: msg.message,
+                            isSingleChat: chat.type === 'single'
+                        });
+                        chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+                    });
+                } else {
+                    console.error("Errore nella risposta del server:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Errore nella richiesta:", error);
+            }
+        } else {
+            // Chiudi il WebSocket quando la chat viene chiusa
+            if (socket) {
+                socket.close();
+                socket = null;
+            }
+        }
     });
 
     const chatsInput = chatItem.querySelector('.chats-input');
@@ -203,16 +244,18 @@ function renderChatItem(chat) {
     chatsInput.addEventListener('submit', function(e) {
         e.preventDefault();
         const message = inputField.value;
-        if (message.trim() !== "") {
+        if (message.trim() !== "" && socket && socket.readyState === WebSocket.OPEN) {
             const messageData = {
-                sender: localStorage.getItem("user_username"),
-                date: new Date().toLocaleTimeString(),
+                type: "chat_message",
+                room_id: chat.id,
                 message: message,
-                isSingleChat: chat.type === 'single'
+                timestamp: new Date().toISOString(),
+                sender: localStorage.getItem("user_username"),
             };
-            const chatBubble = renderChatBubble(messageData);
-            chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+            socket.send(JSON.stringify(messageData));
             inputField.value = '';
+        } else {
+            alert("Connessione WebSocket non attiva");
         }
     });
 }
