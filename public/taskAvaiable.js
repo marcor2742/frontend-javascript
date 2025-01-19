@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Joined chat:", data);
                 // Rimuovi la task dalla lista
                 document.getElementById(`task-${task_id}`).remove();
+                // Rendi di nuovo la sezione Task Active
+                renderTaskActive();
             } else {
                 const errorData = await response.json();
                 console.error("Errore nella risposta del server:", errorData);
