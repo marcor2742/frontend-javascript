@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="expandable-sidebar-container"></div>
                     <div class="content">
                         <div class="profile" id="profile" style="display: none;"></div>
-                        <div class="task-container">Task Available</div>
+                        <div class="task-container" id="taskAvailableContainer"></div>
                         <div class="task-container">Task Active</div>
                         <div class="task-container">Notification</div>
                     </div>
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         renderExpandableSidebar();
+        renderTaskAvaiable();
     }
 
     window.renderHome = renderHome;

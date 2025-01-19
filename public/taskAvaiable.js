@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                const taskContainer = document.getElementById('taskContainer');
+                const taskContainer = document.getElementById('taskAvailableContainer');
                 taskContainer.innerHTML = data.map(task => renderTask(task)).join('');
                 console.log("AviableTask:", data);
             } else {
@@ -79,8 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderTaskAvaiable() {
-        const appDiv = document.querySelector('.App');
-        appDiv.innerHTML = `
+        const taskContainer = document.getElementById('taskAvailableContainer');
+        taskContainer.innerHTML = `
             <div class="taskbox">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5>Task Available</h5>
