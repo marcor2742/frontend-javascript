@@ -15,7 +15,7 @@
 							<div class="profile" id="profile" style="display: none;"></div>
 							<div class="task-container" id="taskAvailableContainer"></div>
 							<div class="task-container" id="taskActiveContainer"></div>
-							<div class="task-container">Notification</div>
+							<div class="task-container" id="notificationContainer"></div>
 						</div>
 					</div>
 				</div>
@@ -40,6 +40,7 @@
 			renderExpandableSidebar();
 			renderTaskAvaiable();
 			renderTaskActive();
+			renderNotification();
 		}
 	
 		window.renderHome = renderHome;
