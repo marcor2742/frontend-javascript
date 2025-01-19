@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="undernavbar">
                     <div class="expandable-sidebar-container"></div>
                     <div class="content">
-                        <div class="profile" id="profile">Profile</div>
+                        <div class="profile" id="profile" style="display: none;"></div>
                         <div class="task-container">Task Available</div>
                         <div class="task-container">Task Active</div>
                         <div class="task-container">Notification</div>
@@ -21,10 +21,21 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        document.getElementById('toggleProfileButton').addEventListener('click', function() {
-            const profileDiv = document.getElementById('profile');
-            profileDiv.style.display = profileDiv.style.display === 'none' ? 'block' : 'none';
+        const profileDiv = document.getElementById('profile');
+        const toggleProfileButton = document.getElementById('toggleProfileButton');
+
+        toggleProfileButton.addEventListener('click', function() {
+            const isProfileVisible = profileDiv.style.display === 'block';
+            profileDiv.style.display = isProfileVisible ? 'none' : 'block';
+            if (!isProfileVisible) {
+                renderProfile();
+            }
         });
+
+        // Check if profile should be visible on page load
+        if (profileDiv.style.display === 'block') {
+            renderProfile();
+        }
 
         renderExpandableSidebar();
     }
