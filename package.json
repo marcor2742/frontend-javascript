@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "lite-server"
+    "start": "serve -s public"
   },
   "devDependencies": {
-    "lite-server": "^2.6.1"
+    "serve": "^14.0.1"
   },
   "dependencies": {
     "bootstrap": "^5.3.3"

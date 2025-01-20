@@ -77,6 +77,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+	async function getFriends() {
+		const token = localStorage.getItem("token");
+		console.log("/----getFirends notification.js----\\");
+		try {
+			const response = await fetch(
+				`http://127.0.0.1:8003/user/friend?user_id=${user_id}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"Authorization": `Bearer ${token}`,
+					},
+				}
+			);
+			if (response.ok) {
+				const data = await response.json();
+				console.log("getFriends data:", data);
+			} else {
+				console.error("Errore nella risposta del server:", response.statusText);
+			}
+		} catch (error) {
+			console.error("Errore nella richiesta:", error);
+		}
+		console.log("\____getFirends notification.js____/");
+	}
+
     function renderNotifications() {
         const notificationContent = document.getElementById('notificationContent');
         notificationContent.innerHTML = messageHistory.map((message, index) => `
@@ -100,6 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" class="form-control" id="friendID" placeholder="User ID">
                     <button class="btn btn-outline-primary" type="button" onclick="handleSendFriendRequest()">Send Friend Request</button>
                     <button class="btn btn-outline-secondary" type="button" onclick="handleDeleteFriendRequest()">Delete Friend Request</button>
+					<button class="btn btn-outline-secondary" type="button" onclick="getFriends()">Get Friends</button>
                 </div>
             </div>
         `;
@@ -110,4 +137,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.renderNotification = renderNotification;
     window.handleSendFriendRequest = handleSendFriendRequest;
     window.handleDeleteFriendRequest = handleDeleteFriendRequest;
+	window.getFriends = getFriends;
 });
