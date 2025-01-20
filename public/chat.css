@@ -2,6 +2,8 @@
   display: none;
   padding: 10px;
   overflow-y: auto;
+  scrollbar-width: none;
+  width: 300px;
 }
 
 .chat-container.open {
@@ -16,6 +18,15 @@
   margin-bottom: 8px;
   overflow: hidden;
   width: 100%; /* Assicura che la larghezza rimanga costante */
+}
+
+.scrollable-content {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1;
+    padding: 10px;
+    overflow-y: scroll;
 }
 
 .chat-item-header {
@@ -143,8 +154,8 @@
   align-items: center;
   justify-content: space-between;
   background-color: #f3f4f6;
-  /* padding: 16px; Rimosso per mantenere la larghezza costante */
-  /* gap: 16px; Rimosso per mantenere la larghezza costante */
+  padding: 16px;
+  gap: 16px;
 }
 
 .chats-input input {
@@ -152,6 +163,7 @@
   padding: 8px;
   border: 1px solid var(--border);
   border-radius: 4px;
+  width: 100%;
 }
 
 .chats-input button {
