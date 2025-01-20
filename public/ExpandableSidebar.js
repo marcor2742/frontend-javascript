@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 const data = await response.json();
                 console.log("Risposta dal server:", data);
-                localStorage.setItem("chat_rooms", JSON.stringify(data));
                 return data;
             } else {
                 const errorData = await response.json();
@@ -61,14 +60,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const toggleChatButton = document.getElementById('toggleChatButton');
         const chatContainer = document.getElementById('chatContainer');
         let addChatContainer = null;
+        let chatContainerOpen = false; // Variabile per gestire lo stato di apertura
 
         toggleChatButton.addEventListener('click', function() {
-            const isOpen = chatContainer.classList.contains('open');
-            chatContainer.classList.toggle('open', !isOpen);
-            toggleChatButton.innerHTML = isOpen ? `
-                <i class="bi bi-chevron-right"></i>
-            ` : `
+            chatContainerOpen = !chatContainerOpen;
+            chatContainer.classList.toggle('open', chatContainerOpen);
+            toggleChatButton.innerHTML = chatContainerOpen ? `
                 <i class="bi bi-chevron-left"></i>
+            ` : `
+                <i class="bi bi-chevron-right"></i>
             `;
         });
 
