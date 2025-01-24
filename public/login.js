@@ -70,7 +70,12 @@ async function loginUser(email, password, csrftoken) {
         if (response.ok) {
             const data = await response.json();
             console.log('Risposta dal server:', data);
-            localStorage.setItem('token', data.access_token);
+            
+			//TODO remove localstorage
+			localStorage.setItem('token', data.access_token);
+
+			
+			window.globalVariables.setVarData({ token: data.access_token });
             return true;
         } else {
             const errorData = await response.json();
@@ -90,7 +95,7 @@ async function handleGetUser(csrftoken) {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${window.globalVariables.getVarData().token}`,
             },
         });
 
@@ -99,9 +104,17 @@ async function handleGetUser(csrftoken) {
             const { user, user_id } = data;
             const { email, username } = user;
 
-            localStorage.setItem('user_email', email);
+            
+			//TODO remove localstorage
+			localStorage.setItem('user_email', email);
             localStorage.setItem('user_username', username);
             localStorage.setItem('user_id', user_id);
+			
+			window.globalVariables.setVarData({
+                userEmail: email,
+                userUsername: username,
+                userId: user_id,
+            });
             console.log('User email:', email);
             console.log('User username:', username);
             console.log('User ID:', user_id);
@@ -128,3 +141,5 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+renderLogin();
