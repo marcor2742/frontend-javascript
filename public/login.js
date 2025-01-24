@@ -1,4 +1,6 @@
-function renderLogin() {
+import { setUserData, getUserData } from './userData.js';
+
+export function renderLogin() {
     const appDiv = document.querySelector('.App');
 
     // Aggiungi dinamicamente il file CSS per la pagina di login
@@ -70,7 +72,8 @@ async function loginUser(email, password, csrftoken) {
         if (response.ok) {
             const data = await response.json();
             console.log('Risposta dal server:', data);
-            localStorage.setItem('token', data.access_token);
+
+            setUserData(email, data.username, data.user_id, data.access_token);
             return true;
         } else {
             const errorData = await response.json();
@@ -90,7 +93,7 @@ async function handleGetUser(csrftoken) {
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${getUserData().token}`,
             },
         });
 
@@ -99,9 +102,7 @@ async function handleGetUser(csrftoken) {
             const { user, user_id } = data;
             const { email, username } = user;
 
-            localStorage.setItem('user_email', email);
-            localStorage.setItem('user_username', username);
-            localStorage.setItem('user_id', user_id);
+            setUserData(email, username, user_id, getUserData().token);
             console.log('User email:', email);
             console.log('User username:', username);
             console.log('User ID:', user_id);
@@ -118,7 +119,7 @@ function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
+        for (let i = 0; cookies.length; i++) {
             const cookie = cookies[i].trim();
             if (cookie.substring(0, name.length + 1) === (name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));

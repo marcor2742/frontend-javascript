@@ -4,29 +4,30 @@ document.addEventListener('DOMContentLoaded', function() {
         handleRoute();
     }
 
-    function handleRoute() {
+    async function handleRoute() {
         const routes = {
             '/': () => navigateTo('/login'),
-            '/login': () => loadScript('login.js', 'renderLogin'),
-            '/register': () => loadScript('register.js', 'renderRegister'),
-            '/home': () => loadScript('home.js', 'renderHome'),
+            '/login': async () => {
+                await import('./login.js').then(module => {
+                    module.renderLogin();
+                });
+            },
+            '/register': async () => {
+                await import('./register.js').then(module => {
+                    module.renderRegister();
+                });
+            },
+            '/home': async () => {
+                await import('./home.js').then(module => {
+                    module.renderHome();
+                });
+            },
             '/mine': () => window.location.href = 'https://minesweeper.online/it/'
         };
 
         const path = window.location.pathname;
         const route = routes[path] || routes['/login'];
         route();
-    }
-
-    function loadScript(url, functionName) {
-        const script = document.createElement('script');
-        script.src = url;
-        script.onload = () => {
-            if (typeof window[functionName] === 'function') {
-                window[functionName]();
-            }
-        };
-        document.head.appendChild(script);
     }
 
     document.querySelector('.App').innerHTML = `
