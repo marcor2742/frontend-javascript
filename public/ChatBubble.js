@@ -1,6 +1,8 @@
+import { getVariables } from './var.js';
+
 function renderChatBubble({ sender, date, message, isSingleChat }) {
-    const user_name = localStorage.getItem("user_username");
-    const isSenderMe = user_name === sender;
+    const { userUsername } = getVariables();
+    const isSenderMe = userUsername === sender;
 
     const chatBubble = document.createElement('div');
     chatBubble.className = `chat-bubble ${isSenderMe ? "true" : "false"}`;
@@ -21,4 +23,4 @@ function renderChatBubble({ sender, date, message, isSingleChat }) {
     return chatBubble;
 }
 
-window.renderChatBubble = renderChatBubble;
+export { renderChatBubble };

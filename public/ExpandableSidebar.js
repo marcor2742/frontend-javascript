@@ -1,126 +1,126 @@
-document.addEventListener('DOMContentLoaded', function() {
-    async function getChatRooms() {
-        const user_id = localStorage.getItem("user_id");
-        const token = localStorage.getItem('token');
-        console.log("/-----ExpandableSidebar.js-----\\");
-        console.log("user_id in sidechat: ", user_id);
-        console.log("Token getChatRooms:", token);
-        console.log(`http://localhost:8001/chat/chat_rooms/getchat/?users=${user_id}`);
-        console.log("\\_____ExpandableSidebar.js_____/");
-        try {
-            const response = await fetch(
-                `http://localhost:8001/chat/chat_rooms/getchat/?user_id=${user_id}`,
-                {
-                    method: "GET",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                }
-            );
+import { getVariables } from './var.js';
+import { renderAddChat } from './AddChat.js';
+import { renderChatBubble } from './ChatBubble.js';
+import { getCookie } from './cookie.js';
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Risposta dal server:", data);
-                return data;
-            } else {
-                const errorData = await response.json();
-                console.error("Errore nella risposta del server:", errorData);
-                return null;
+async function getChatRooms() {
+    const { userId, token } = getVariables();
+    console.log("/-----ExpandableSidebar.js-----\\");
+    console.log("user_id in sidechat: ", userId);
+    console.log("Token getChatRooms:", token);
+    console.log(`http://localhost:8001/chat/chat_rooms/getchat/?users=${userId}`);
+    console.log("\\_____ExpandableSidebar.js_____/");
+    try {
+        const response = await fetch(
+            `http://localhost:8001/chat/chat_rooms/getchat/?user_id=${userId}`,
+            {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
             }
-        } catch (error) {
-            console.error("Errore nella richiesta:", error);
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Risposta dal server:", data);
+            return data;
+        } else {
+            const errorData = await response.json();
+            console.error("Errore nella risposta del server:", errorData);
             return null;
         }
+    } catch (error) {
+        console.error("Errore nella richiesta:", error);
+        return null;
     }
-    
-    function renderExpandableSidebar() {
-        const sidebarContainer = document.querySelector('.expandable-sidebar-container');
-        sidebarContainer.innerHTML = `
-            <div class="sidebar">
-                <button id="toggleChatButton" class="btn btn-light mb-2">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-                <button id="createChatButton" class="btn btn-light mb-2">
-                    <i class="bi bi-plus"></i>
-                </button>
-                <button id="singleChatButton" class="btn btn-light mb-2">
-                    <i class="bi bi-chat-dots"></i>
-                </button>
-                <button id="groupChatButton" class="btn btn-light mb-2">
-                    <i class="bi bi-people"></i>
-                </button>
-                <button id="randomChatButton" class="btn btn-light mb-2">
-                    <i class="bi bi-shuffle"></i>
-                </button>
-            </div>
-            <div id="chatContainer" class="chat-container"></div>
-        `;
+}
 
-        const toggleChatButton = document.getElementById('toggleChatButton');
-        const chatContainer = document.getElementById('chatContainer');
-        let addChatContainer = null;
-        let chatContainerOpen = false; // Variabile per gestire lo stato di apertura
-
-        toggleChatButton.addEventListener('click', function() {
-            chatContainerOpen = !chatContainerOpen;
-            chatContainer.classList.toggle('open', chatContainerOpen);
-            toggleChatButton.innerHTML = chatContainerOpen ? `
-                <i class="bi bi-chevron-left"></i>
-            ` : `
+function renderExpandableSidebar() {
+    const sidebarContainer = document.querySelector('.expandable-sidebar-container');
+    sidebarContainer.innerHTML = `
+        <div class="sidebar">
+            <button id="toggleChatButton" class="btn btn-light mb-2">
                 <i class="bi bi-chevron-right"></i>
-            `;
+            </button>
+            <button id="createChatButton" class="btn btn-light mb-2">
+                <i class="bi bi-plus"></i>
+            </button>
+            <button id="singleChatButton" class="btn btn-light mb-2">
+                <i class="bi bi-chat-dots"></i>
+            </button>
+            <button id="groupChatButton" class="btn btn-light mb-2">
+                <i class="bi bi-people"></i>
+            </button>
+            <button id="randomChatButton" class="btn btn-light mb-2">
+                <i class="bi bi-shuffle"></i>
+            </button>
+        </div>
+        <div id="chatContainer" class="chat-container"></div>
+    `;
+
+    const toggleChatButton = document.getElementById('toggleChatButton');
+    const chatContainer = document.getElementById('chatContainer');
+    let addChatContainer = null;
+    let chatContainerOpen = false; // Variabile per gestire lo stato di apertura
+
+    toggleChatButton.addEventListener('click', function() {
+        chatContainerOpen = !chatContainerOpen;
+        chatContainer.classList.toggle('open', chatContainerOpen);
+        toggleChatButton.innerHTML = chatContainerOpen ? `
+            <i class="bi bi-chevron-left"></i>
+        ` : `
+            <i class="bi bi-chevron-right"></i>
+        `;
+    });
+
+    document.getElementById('createChatButton').addEventListener('click', function() {
+        if (addChatContainer) {
+            chatContainer.removeChild(addChatContainer);
+            addChatContainer = null;
+        } else {
+            addChatContainer = renderAddChat();
+            chatContainer.insertBefore(addChatContainer, chatContainer.firstChild);
+        }
+    });
+
+    document.getElementById('singleChatButton').addEventListener('click', function() {
+        renderChatItem({
+            id: '5',
+            name: 'Eve',
+            lastMessage: 'Thanks for your help!',
+            type: 'single'
         });
+    });
 
-        document.getElementById('createChatButton').addEventListener('click', function() {
-            if (addChatContainer) {
-                chatContainer.removeChild(addChatContainer);
-                addChatContainer = null;
-            } else {
-                addChatContainer = renderAddChat();
-                chatContainer.insertBefore(addChatContainer, chatContainer.firstChild);
-            }
-        });
+    document.getElementById('groupChatButton').addEventListener('click', function() {
+        alert('Group Chat clicked');
+    });
 
-        document.getElementById('singleChatButton').addEventListener('click', function() {
-            renderChatItem({
-                id: '5',
-                name: 'Eve',
-                lastMessage: 'Thanks for your help!',
-                type: 'single'
-            });
-        });
+    document.getElementById('randomChatButton').addEventListener('click', function() {
+        alert('Random Chat clicked');
+    });
 
-        document.getElementById('groupChatButton').addEventListener('click', function() {
-            alert('Group Chat clicked');
-        });
+    // Fetch chat rooms and render them
+    getChatRooms().then(chats => {
+        if (chats) {
+            chats.forEach(chat => {
+                if (!chat.room_id) {
+                    console.error("Chat ID non trovato:", chat);
+                    return;
+                }
 
-        document.getElementById('randomChatButton').addEventListener('click', function() {
-            alert('Random Chat clicked');
-        });
-
-        // Fetch chat rooms and render them
-        getChatRooms().then(chats => {
-            if (chats) {
-                chats.forEach(chat => {
-                    if (!chat.room_id) {
-                        console.error("Chat ID non trovato:", chat);
-                        return;
-                    }
-
-                    renderChatItem({
-                        id: chat.room_id,
-                        name: chat.room_name,
-                        lastMessage: chat.last_message,
-                        type: chat.type
-                    });
+                renderChatItem({
+                    id: chat.room_id,
+                    name: chat.room_name,
+                    lastMessage: chat.last_message,
+                    type: chat.type
                 });
-            }
-        });
-    }
-
-    window.renderExpandableSidebar = renderExpandableSidebar;
-});
+            });
+        }
+    });
+}
 
 function renderChatItem(chat) {
     const chatContainer = document.querySelector('.chat-container');
@@ -169,7 +169,7 @@ function renderChatItem(chat) {
 
         if (!isOpen) {
             // Apri il WebSocket per la chat room
-            const token = localStorage.getItem("token");
+            const { token } = getVariables();
             socket = new WebSocket(`ws://127.0.0.1:8001/ws/chat/${chat.id}/?token=${token}`);
 
             socket.onopen = () => {
@@ -207,7 +207,7 @@ function renderChatItem(chat) {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
-                            "X-CSRFToken": localStorage.getItem("csrftoken"),
+                            "X-CSRFToken": getCookie('csrftoken'),
                             "Authorization": `Bearer ${token}`,
                         },
                     }
@@ -251,7 +251,7 @@ function renderChatItem(chat) {
                 room_id: chat.id,
                 message: message,
                 timestamp: new Date().toISOString(),
-                sender: localStorage.getItem("user_username"),
+                sender: getVariables().userUsername,
             };
             socket.send(JSON.stringify(messageData));
             inputField.value = '';
@@ -261,25 +261,4 @@ function renderChatItem(chat) {
     });
 }
 
-function renderChatBubble({ sender, date, message, isSingleChat }) {
-    const user_name = localStorage.getItem("user_username");
-    const isSenderMe = user_name === sender;
-
-    const chatBubble = document.createElement('div');
-    chatBubble.className = `chat-bubble ${isSenderMe ? "true" : "false"}`;
-    chatBubble.innerHTML = `
-        ${!isSingleChat && !isSenderMe ? `
-            <div class="avatar">
-                <div class="avatar-placeholder"></div>
-                <div class="date under">${date}</div>
-            </div>
-        ` : ''}
-        <div class="chat-content ${isSenderMe ? "true" : ""}">
-            ${!isSingleChat && !isSenderMe ? `<div class="username">${sender}</div>` : ''}
-            <div class="message">${message}</div>
-            ${isSingleChat || isSenderMe ? `<div class="date ${isSenderMe ? "true" : "false"}">${date}</div>` : ''}
-        </div>
-    `;
-
-    return chatBubble;
-}
+export { renderExpandableSidebar };

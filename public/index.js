@@ -1,3 +1,8 @@
+import { renderLogin } from './login.js';
+import { renderRegister } from './register.js';
+import { renderHome } from './home.js';
+import { setVariables, getVariables } from './var.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     function navigateTo(path) {
         window.history.pushState({}, path, window.location.origin + path);
@@ -7,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleRoute() {
         const routes = {
             '/': () => navigateTo('/login'),
-            '/login': () => loadScript('login.js', 'renderLogin'),
-            '/register': () => loadScript('register.js', 'renderRegister'),
-            '/home': () => loadScript('home.js', 'renderHome'),
+            '/login': () => renderLogin(),
+            '/register': () => renderRegister(),
+            '/home': () => renderHome(),
             '/mine': () => window.location.href = 'https://minesweeper.online/it/'
         };
 
@@ -21,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function loadScript(url, functionName) {
         const script = document.createElement('script');
         script.src = url;
+        script.type = 'module';
         script.onload = () => {
             if (typeof window[functionName] === 'function') {
                 window[functionName]();
@@ -52,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     window.onpopstate = handleRoute;
+    window.navigateTo = navigateTo; // Assicurati che navigateTo sia accessibile globalmente
     handleRoute();
-
-    window.navigateTo = navigateTo;
 });

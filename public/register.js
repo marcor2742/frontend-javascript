@@ -1,3 +1,5 @@
+	import { setVariables, getVariables } from './var.js';
+	
 	function renderRegister() {
 		const appDiv = document.querySelector('.App');
 	
@@ -105,3 +107,5 @@
 		}
 		return cookieValue;
 	}
+	
+	export { renderRegister };
