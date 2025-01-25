@@ -97,8 +97,12 @@
 .readonly-input {
   background-color: #f5f5f5;
   pointer-events: none;
+  transition: none;
 }
 
 .readonly-input:focus {
-  border-color: transparent;
+  outline: none; /* Aggiungi questa regola per rimuovere l'illuminazione */
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  box-shadow: none;
+  background-color: #f5f5f5;
 }

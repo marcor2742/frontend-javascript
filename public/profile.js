@@ -34,11 +34,6 @@ function renderProfile() {
     const { userUsername, userEmail, userId, name, surname, birthdate, bio } = getVariables();
     let edit = false;
 
-    let tempName = "";
-    let tempSurname = "";
-    let tempBirthdate = "";
-    let tempBio = "";
-
     const profileDiv = document.getElementById('profile');
     profileDiv.innerHTML = `
         <div class="profile-card">
@@ -59,19 +54,19 @@ function renderProfile() {
                         </div>
                         <div class="profile-form-group">
                             <label for="birthdate">Data di nascita</label>
-                            <input type="date" id="birthdate" name="birthdate" value="${birthdate}" class="form-control">
+                            <input type="date" id="birthdate" name="birthdate" value="${birthdate}" readonly class="form-control readonly-input">
                         </div>
                         <div class="profile-form-group">
                             <label for="name">Nome</label>
-                            <input type="text" id="name" name="name" value="${name}" class="form-control">
+                            <input type="text" id="name" name="name" value="${name}" readonly class="form-control readonly-input">
                         </div>
                         <div class="profile-form-group">
                             <label for="surname">Cognome</label>
-                            <input type="text" id="surname" name="surname" value="${surname}" class="form-control">
+                            <input type="text" id="surname" name="surname" value="${surname}" readonly class="form-control readonly-input">
                         </div>
                         <div class="profile-form-group">
                             <label for="bio">Bio</label>
-                            <textarea id="bio" name="bio" class="form-control" rows="1">${bio}</textarea>
+                            <textarea id="bio" name="bio" readonly class="form-control readonly-input" rows="1">${bio}</textarea>
                         </div>
                     </form>
                 </div>
@@ -100,11 +95,7 @@ function renderProfile() {
         e.preventDefault();
         edit = !edit;
         if (edit) {
-            tempName = name;
-            tempSurname = surname;
-            tempBirthdate = birthdate;
-            tempBio = bio;
-            form.querySelectorAll('input, textarea').forEach(input => {
+            form.querySelectorAll('input:not([id="username"]):not([id="user_id"]):not([id="email"]), textarea').forEach(input => {
                 input.removeAttribute('readonly');
                 input.classList.remove('readonly-input');
             });
@@ -158,10 +149,11 @@ function renderProfile() {
                     birthdate: data.birth_date || "",
                     bio: data.bio || ""
                 });
-                document.getElementById('name').value = data.first_name || "";
-                document.getElementById('surname').value = data.last_name || "";
-                document.getElementById('birthdate').value = data.birth_date || "";
+                document.getElementById('name').setAttribute('value', data.first_name || "");
+                document.getElementById('surname').setAttribute('value', data.last_name || "");
+                document.getElementById('birthdate').setAttribute('value', data.birth_date || "");
                 document.getElementById('bio').value = data.bio || "";
+                console.log('Variables after GetProfile:', getVariables()); // Aggiungi questo per il debug
             } else {
                 const errorData = await response.json();
                 console.error("Errore nella risposta del server:", errorData);
