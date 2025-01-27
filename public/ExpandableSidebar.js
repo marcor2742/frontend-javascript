@@ -3,6 +3,17 @@ import { renderAddChat } from './AddChat.js';
 import { renderChatBubble } from './ChatBubble.js';
 import { getCookie } from './cookie.js';
 
+const displayedDates = new Set();
+
+function isFirstMessageOfDay(date) {
+    const dateString = date.toLocaleDateString('it-IT');
+    if (!displayedDates.has(dateString)) {
+        displayedDates.add(dateString);
+        return true;
+    }
+    return false;
+}
+
 async function getChatRooms() {
     const { userId, token } = getVariables();
     console.log("/-----ExpandableSidebar.js-----\\");
@@ -114,7 +125,7 @@ function renderExpandableSidebar() {
                 renderChatItem({
                     id: chat.room_id,
                     name: chat.room_name,
-                    lastMessage: chat.last_message,
+                    lastMessage: chat.room_description,
                     type: chat.type
                 });
             });
@@ -179,14 +190,25 @@ function renderChatItem(chat) {
             socket.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 console.log(`Messaggio ricevuto per chat room ${chat.id}:`, data);
+
+                const messageDate = new Date(data.timestamp);
+                const chatContent = chatItem.querySelector('.scrollable-content');
+
+                if (isFirstMessageOfDay(messageDate)) {
+                    const dateMessage = document.createElement('div');
+                    dateMessage.className = 'date-message';
+                    dateMessage.textContent = messageDate.toLocaleDateString('it-IT');
+                    chatContent.appendChild(dateMessage);
+                }
+
                 // Aggiungi il messaggio alla chat room corrispondente
                 const chatBubble = renderChatBubble({
                     sender: data.sender,
-                    date: new Date(data.timestamp).toLocaleTimeString(),
+					date: new Date(msg.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
                     message: data.message,
                     isSingleChat: chat.type === 'single'
                 });
-                chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+                chatContent.appendChild(chatBubble);
             };
 
             socket.onclose = () => {
@@ -215,13 +237,23 @@ function renderChatItem(chat) {
                 if (response.ok) {
                     const data = await response.json();
                     data.forEach(msg => {
+                        const messageDate = new Date(msg.timestamp);
+                        const chatContent = chatItem.querySelector('.scrollable-content');
+
+                        if (isFirstMessageOfDay(messageDate)) {
+                            const dateMessage = document.createElement('div');
+                            dateMessage.className = 'date-message';
+                            dateMessage.textContent = messageDate.toLocaleDateString('it-IT');
+                            chatContent.appendChild(dateMessage);
+                        }
+
                         const chatBubble = renderChatBubble({
                             sender: msg.sender,
-                            date: new Date(msg.timestamp).toLocaleTimeString(),
+                            date: new Date(msg.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
                             message: msg.message,
                             isSingleChat: chat.type === 'single'
                         });
-                        chatItem.querySelector('.scrollable-content').appendChild(chatBubble);
+                        chatContent.appendChild(chatBubble);
                     });
                 } else {
                     console.error("Errore nella risposta del server:", response.statusText);

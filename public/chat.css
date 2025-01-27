@@ -184,3 +184,11 @@
 .chats-input button:hover {
   background-color: #2563eb;
 }
+
+/* Stile per il messaggio di data */
+.date-message {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 10px 0;
+}
