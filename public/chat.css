@@ -92,9 +92,11 @@
 }
 
 .chat-bubble.true {
-  flex-direction: row-reverse;
-  align-self: flex-end;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
   margin-left: auto;
+
 }
 
 .chat-bubble.false {

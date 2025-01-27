@@ -36,6 +36,7 @@ async function getFriends() {
     console.log("/----getFirends notification.js----\\");
 	console.log("User ID:", userId);
 	console.log("Token:", token);
+	console.log("indirizzo:", `http://127.0.0.1:8002/user/friend?user_id=${userId}&accepted=true`)
     try {
         const response = await fetch(
             `http://127.0.0.1:8002/user/friend?user_id=${userId}&accepted=true`,

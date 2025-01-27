@@ -4,6 +4,11 @@ import { renderHome } from './home.js';
 import { setVariables, getVariables } from './var.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+    const savedVariables = localStorage.getItem('variables');
+    if (savedVariables) {
+        setVariables(JSON.parse(savedVariables));
+    }
+
     function navigateTo(path) {
         window.history.pushState({}, path, window.location.origin + path);
         handleRoute();

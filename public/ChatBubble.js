@@ -16,8 +16,8 @@ function renderChatBubble({ sender, date, message, isSingleChat }) {
         <div class="chat-content ${isSenderMe ? "true" : ""}">
             ${!isSingleChat && !isSenderMe ? `<div class="username">${sender}</div>` : ''}
             <div class="message">${message}</div>
-            ${isSingleChat || isSenderMe ? `<div class="date ${isSenderMe ? "true" : "false"}">${date}</div>` : ''}
-        </div>
+		</div>
+        ${isSingleChat || isSenderMe ? `<div class="date ${isSenderMe ? "true" : "false"}">${date}</div>` : ''}
     `;
 
     return chatBubble;
