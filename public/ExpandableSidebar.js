@@ -52,29 +52,42 @@ function renderExpandableSidebar() {
     const sidebarContainer = document.querySelector('.expandable-sidebar-container');
     sidebarContainer.innerHTML = `
         <div class="sidebar">
-            <button id="toggleChatButton" class="btn btn-light mb-2">
-                <i class="bi bi-chevron-right"></i>
-            </button>
-            <button id="createChatButton" class="btn btn-light mb-2">
-                <i class="bi bi-plus"></i>
-            </button>
-            <button id="singleChatButton" class="btn btn-light mb-2">
-                <i class="bi bi-chat-dots"></i>
-            </button>
-            <button id="groupChatButton" class="btn btn-light mb-2">
-                <i class="bi bi-people"></i>
-            </button>
-            <button id="randomChatButton" class="btn btn-light mb-2">
-                <i class="bi bi-shuffle"></i>
-            </button>
+            <div id="buttonContainer" class="button-container">
+                <div id="buttonHighlight" class="button-highlight"></div>
+                <button id="toggleChatButton" class="btn btn-light mb-2">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <button id="createChatButton" class="btn btn-light mb-2">
+                    <i class="bi bi-plus"></i>
+                </button>
+                <button id="singleChatButton" class="btn btn-light mb-2">
+                    <i class="bi bi-chat-dots"></i>
+                </button>
+                <button id="groupChatButton" class="btn btn-light mb-2">
+                    <i class="bi bi-people"></i>
+                </button>
+                <button id="randomChatButton" class="btn btn-light mb-2">
+                    <i class="bi bi-shuffle"></i>
+                </button>
+            </div>
         </div>
         <div id="chatContainer" class="chat-container"></div>
     `;
 
+    const buttonContainer = document.getElementById('buttonContainer');
+    const buttonHighlight = document.getElementById('buttonHighlight');
+    const buttons = buttonContainer.querySelectorAll('button');
     const toggleChatButton = document.getElementById('toggleChatButton');
     const chatContainer = document.getElementById('chatContainer');
     let addChatContainer = null;
     let chatContainerOpen = false; // Variabile per gestire lo stato di apertura
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            const buttonHeight = button.offsetHeight + 8; // Altezza del bottone più margine
+            gsap.to(buttonHighlight, { duration: 0.5, y: index * buttonHeight });
+        });
+    });
 
     toggleChatButton.addEventListener('click', function() {
         chatContainerOpen = !chatContainerOpen;
@@ -204,7 +217,7 @@ function renderChatItem(chat) {
                 // Aggiungi il messaggio alla chat room corrispondente
                 const chatBubble = renderChatBubble({
                     sender: data.sender,
-					date: new Date(msg.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+                    date: new Date(data.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
                     message: data.message,
                     isSingleChat: chat.type === 'single'
                 });
