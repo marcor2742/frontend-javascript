@@ -4,10 +4,10 @@ import { renderHome } from './home.js';
 import { setVariables, getVariables } from './var.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    const savedVariables = localStorage.getItem('variables');
-    if (savedVariables) {
-        setVariables(JSON.parse(savedVariables));
-    }
+	if (getVariables().userId === null)
+		window.navigateTo('/login'); // controlla se le variabili sono presenti sennò reindirizza a login
+	else
+		console.log('var presenti');
 
     function navigateTo(path) {
         window.history.pushState({}, path, window.location.origin + path);
