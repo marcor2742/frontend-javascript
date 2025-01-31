@@ -1,8 +1,8 @@
-import * as THREE from '/node_modules/three/build/three.module.js';
-import { FontLoader } from '/node_modules/three/examples/jsm/loaders/FontLoader.js';
-import { TextGeometry } from '/node_modules/three/examples/jsm/geometries/TextGeometry.js';
-import { Group, remove } from '/node_modules/three/examples/jsm/libs/tween.module.js';
-import Stats from '/node_modules/three/examples/jsm/libs/stats.module.js';
+import * as THREE from 'three';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { Group, remove } from 'three/addons/libs/tween.module.js';
+import Stats from 'three/addons/libs/stats.module.js';
 
 function renderPong() {
     document.querySelector('.App').innerHTML = `
