@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "serve -s public"
+    "start": "serve -s ."
   },
   "dependencies": {
     "bootstrap": "^5.3.3",

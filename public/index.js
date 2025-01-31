@@ -2,7 +2,6 @@ import { renderLogin } from './login.js';
 import { renderRegister } from './register.js';
 import { renderHome } from './home.js';
 import { setVariables, getVariables } from './var.js';
-import { renderPong } from './pong.js';
 import { renderNotification, initializeWebSocket } from './notification.js';
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -17,14 +16,17 @@ document.addEventListener('DOMContentLoaded', function() {
         handleRoute();
     }
 
-    function handleRoute() {
+    async function handleRoute() {
         const routes = {
             '/': () => navigateTo('/login'),
             '/login': () => renderLogin(),
             '/register': () => renderRegister(),
             '/home': () => renderHome(),
             '/mine': () => window.location.href = 'https://minesweeper.online/it/',
-            '/pong': () => renderPong(),
+            '/pong': async () => {
+                const { renderPong } = await import('./pong.js');
+                renderPong();
+            },
             '/notifications': () => {
                 renderNotification();
                 initializeWebSocket(); // senza richiamare questo, il websocket partiva sempre
