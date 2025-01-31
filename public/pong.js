@@ -2,59 +2,65 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { Group, remove } from 'three/addons/libs/tween.module.js';
+import Stats from 'https://cdn.jsdelivr.net/npm/stats.js@0.17.0/src/Stats.js';
 
 function renderPong() {
     document.querySelector('.App').innerHTML = `
         <div class="gamecontainer">
-            <div id="menu">
-                <button id="newGameButton">New Game</button>
-                <button id="settingsButton">Settings</button>
-                <button id="exitButton">Exit</button>
-            </div>
-            <div id="gameModeMenu" style="display: none;">
-                <button id="onePlayerButton">1 Player</button>
-                <button id="twoPlayerButton">2 Player</button>
-                <button id="backButton">Back</button>
-            </div>
-            <div id="settingsMenu" style="display: none;">
-                <div class="color-setting">
-                    <label for="player1Color">Player 1 Color:</label>
-                    <div class="color-pickers">
-                        <input type="color" id="player1Color" name="player1Color" value="#4deeea">
-                        <input type="color" id="player1Emissive" name="player1Emissive" value="#4deeea">
-                    </div>
-                </div>
-                <div class="color-setting">
-                    <label for="player2Color">Player 2 Color:</label>
-                    <div class="color-pickers">
-                        <input type="color" id="player2Color" name="player2Color" value="#ffe700">
-                        <input type="color" id="player2Emissive" name="player2Emissive" value="#ffe700">
-                    </div>
-                </div>
-                <div class="color-setting">
-                    <label for="ballColor">Ball Color:</label>
-                    <div class="color-pickers">
-                        <input type="color" id="ballColor" name="ballColor" value="#0bff01">
-                        <input type="color" id="ballEmissive" name="ballEmissive" value="#00ff00">
-                    </div>
-                </div>
-                <div class="color-setting">
-                    <label for="ringColor">Ring Color:</label>
-                    <div class="color-pickers">
-                        <input type="color" id="ringColor" name="ringColor" value="#ff0000">
-                        <input type="color" id="ringEmissive" name="ringEmissive" value="#0000ff">
-                    </div>
-                </div>
-                <button id="saveSettingsButton">Save</button>
-                <button id="resetSettingsButton">Reset</button>
-                <button id="backFromSettingsButton">Back</button>
-            </div>
-            <div id="pauseMenu" style="display: none;">
-                <button id="resumeButton">Resume Game</button>
-                <button id="exitButtonPause">Exit</button>
-            </div>
-            <img id="gameOverImage" src="gungeon.png" alt="Game Over" style="display: none;">
+        <div id="menu">
+            <button id="newGameButton">New Game</button>
+            <button id="settingsButton">Settings</button>
+            <button id="exitButton">Exit</button>
         </div>
+        <div id="gameModeMenu" style="display: none;">
+            <button id="onePlayerButton">1 Player</button>
+            <button id="twoPlayerButton">2 Player</button>
+            <button id="backButton">Back</button>
+        </div>
+        <div id="settingsMenu" style="display: none;">
+            <div class="color-setting">
+                <label for="player1Color">Player 1 Color:</label>
+                <div class="color-pickers">
+                    <input type="color" id="player1Color" name="player1Color" value="#4deeea">
+                    <input type="color" id="player1Emissive" name="player1Emissive" value="#4deeea">
+                </div>
+            </div>
+            <div class="color-setting">
+                <label for="player2Color">Player 2 Color:</label>
+                <div class="color-pickers">
+                    <input type="color" id="player2Color" name="player2Color" value="#ffe700">
+                    <input type="color" id="player2Emissive" name="player2Emissive" value="#ffe700">
+                </div>
+            </div>
+            <div class="color-setting">
+                <label for="ballColor">Ball Color:</label>
+                <div class="color-pickers">
+                    <input type="color" id="ballColor" name="ballColor" value="#0bff01">
+                    <input type="color" id="ballEmissive" name="ballEmissive" value="#00ff00">
+                </div>
+            </div>
+            <div class="color-setting">
+                <label for="ringColor">Ring Color:</label>
+                <div class="color-pickers">
+                    <input type="color" id="ringColor" name="ringColor" value="#ff0000">
+                    <input type="color" id="ringEmissive" name="ringEmissive" value="#0000ff">
+                </div>
+            </div>
+            <div class="color-setting">
+                <label for="showStats">Show Stats:</label>
+                <input type="checkbox" id="showStats" name="showStats">
+            </div>
+            <button id="saveSettingsButton">Save</button>
+            <button id="resetSettingsButton">Reset</button>
+            <button id="backFromSettingsButton">Back</button>
+        </div>
+        <div id="pauseMenu" style="display: none;">
+            <button id="resumeButton">Resume Game</button>
+            <button id="exitButtonPause">Exit</button>
+        </div>
+        <img id="gameOverImage" src="gungeon.png" alt="Game Over" style="display: none;">
+        <script type="module" src="/main.js"></script>
+    </div>
     `;
 
     document.getElementById('newGameButton').addEventListener('click', showGameModeMenu);
@@ -100,11 +106,14 @@ function renderPong() {
         mat.ring.emissive.set(event.target.value);
     });
 
+    document.getElementById('showStats').addEventListener('change', (event) => {
+        toggleStats(event.target.checked);
+    });
+
     document.getElementById('menu').style.display = 'block';
 }
 
 export { renderPong, showGameModeMenu, showSettingsMenu, exitGame, startOnePlayerGame, startTwoPlayerGame, resumeGame, saveSettings, resetSettings, showMainMenu };
-
 
 let look = {x : 0, y : 0, z : 0}
 let cam = {x : 0, y : 0, z : 100}
@@ -135,7 +144,6 @@ camera.lookAt( look.x,look.y,look.z );
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth,window.innerHeight );
-renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
 
 
@@ -194,9 +202,9 @@ let scoreText;
 
 function createScore() {
 	const loader = new FontLoader();
-	const font = loader.load(
+	const fonts = loader.load(
 	// resource URL
-	'node_modules/three/examples/fonts/helvetiker_regular.typeface.json',
+	'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
 
 	// onLoad callback
 	function ( font ) {
@@ -206,11 +214,6 @@ function createScore() {
 			size: 10,
 			depth: 1,
 			curveSegments: 12,
-			bevelEnabled: false,
-			bevelThickness: 1,
-			bevelSize: 10,
-			bevelOffset: 1,
-			bevelSegments: 5
 		} );
 		geometry.computeBoundingBox();
         const centerOffset = -(geometry.boundingBox.max.x - geometry.boundingBox.min.x) / 2;
@@ -238,6 +241,17 @@ function updateScore() {
 	createScore();
 }
 
+//stats setup
+
+const stats = new Stats();
+stats.showPanel(0);
+document.body.appendChild(stats.dom);
+stats.dom.style.display = 'none'; // Hide stats by default
+
+function toggleStats(show) {
+    stats.dom.style.display = show ? 'block' : 'none';
+}
+
 //Game setup
 
 const game = new THREE.Group();
@@ -248,50 +262,62 @@ renderer.render( scene, camera );
 
 //Game logic
 
-function animate() {
-	if (!isPaused) {
-		if (p1IsHit()) {
-			hit_position = (ball.position.y - p1.position.y);
-			wallHitPosition = 0;
-			angle = hit_position / (player.h,player.y) * -90;
-			if (ball_speed < 5 * player.h )
-				ball_speed += 0.1;
-		}
-		else if	(p2IsHit()) {
-			hit_position = (ball.position.y - p2.position.y);
-			wallHitPosition = 0;
-			angle = 180 + (hit_position / (player.h,player.y) * 90);
-			if (ball_speed < 5 * player.h )
-				ball_speed += 0.1;
-		}
-		else if ((wallHitPosition <= 0 && ball.position.y + ball_radius + ball_speed >= ring.x / 2)
-			|| (wallHitPosition >= 0 && ball.position.y - ball_radius - ball_speed <= -ring.x / 2 )){
-				wallHitPosition = ball.position.y;
-				angle *= -1;
+let previousTimestamp = 0;
+const timeStep = 1000/ 60;
+
+const animate = (timestamp) => {
+	stats.begin();
+
+	requestAnimationFrame( animate );
+	const deltaTime = timestamp - previousTimestamp;
+	if (deltaTime >= timeStep) {
+		previousTimestamp = timestamp;
+		if (!isPaused) {
+			if (p1IsHit()) {
+				hit_position = (ball.position.y - p1.position.y);
+				wallHitPosition = 0;
+				angle = hit_position / (player.h,player.y) * -90;
+				if (ball_speed < 5 * player.h )
+					ball_speed += 0.1;
 			}
-		else if (ball.position.x - ball_radius < r_left.position.x + ring.h) {
-			console.log("p2 ha segnato");
-			p2_score += 1;
-			score();
+			else if	(p2IsHit()) {
+				hit_position = (ball.position.y - p2.position.y);
+				wallHitPosition = 0;
+				angle = 180 + (hit_position / (player.h,player.y) * 90);
+				if (ball_speed < 5 * player.h )
+					ball_speed += 0.1;
+			}
+			else if ((wallHitPosition <= 0 && ball.position.y + ball_radius + ball_speed >= ring.x / 2)
+				|| (wallHitPosition >= 0 && ball.position.y - ball_radius - ball_speed <= -ring.x / 2 )){
+					wallHitPosition = ball.position.y;
+					angle *= -1;
+				}
+			else if (ball.position.x - ball_radius < r_left.position.x + ring.h) {
+				console.log("p2 ha segnato");
+				p2_score += 1;
+				score();
+			}
+			else if (ball.position.x + ball_radius > r_right.position.x - ring.h) {
+				console.log("p1 ha segnato");
+				p1_score += 1;
+				score();
+			}
+			ball.position.y += ball_speed * -Math.sin(angle * Math.PI /180);
+			ball.position.x += ball_speed * Math.cos(angle * Math.PI /180);
+			if ((p1_move_y > 0 && p1.position.y + player.y / 2 <= ring.x / 2 - ring.h / 2) 
+				|| (p1_move_y < 0 && p1.position.y - player.y / 2 >= - ring.x / 2 + ring.h / 2))
+				p1.position.y += p1_move_y;
+			if (IAisActive)
+				moveIA();
+			if ((p2_move_y > 0 && p2.position.y + player.y / 2 <= ring.x / 2 - ring.h / 2)
+				|| (p2_move_y < 0 && p2.position.y - player.y / 2 >= - ring.x / 2 + ring.h / 2))
+				p2.position.y += p2_move_y;
 		}
-		else if (ball.position.x + ball_radius > r_right.position.x - ring.h) {
-			console.log("p1 ha segnato");
-			p1_score += 1;
-			score();
-		}
-		ball.position.y += ball_speed * -Math.sin(angle * Math.PI /180);
-		ball.position.x += ball_speed * Math.cos(angle * Math.PI /180);
-		if ((p1_move_y > 0 && p1.position.y + player.y / 2 <= ring.x / 2 - ring.h / 2) 
-			|| (p1_move_y < 0 && p1.position.y - player.y / 2 >= - ring.x / 2 + ring.h / 2))
-			p1.position.y += p1_move_y;
-		if (IAisActive)
-			moveIA();
-		if ((p2_move_y > 0 && p2.position.y + player.y / 2 <= ring.x / 2 - ring.h / 2)
-			|| (p2_move_y < 0 && p2.position.y - player.y / 2 >= - ring.x / 2 + ring.h / 2))
-			p2.position.y += p2_move_y;
+		renderer.render( scene, camera );
+		stats.end();
 	}
-	renderer.render( scene, camera );
 }
+requestAnimationFrame( animate );
 
 function p1IsHit()
 {
@@ -392,6 +418,76 @@ function restart_game(){
 
 //Game over
 
+let particleSystem;
+
+function createParticleExplosion(position) {
+    const particleCount = 1000;
+    const particles = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const velocities = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 6;
+        positions[i3] = position.x;
+        positions[i3 + 1] = position.y;
+        positions[i3 + 2] = position.z;
+
+        velocities[i3] = (Math.random() - 0.5) * 128;
+        velocities[i3 + 1] = (Math.random() - 0.5) * 128;
+        velocities[i3 + 2] = (Math.random() - 0.5) * 128;
+
+        colors[i3] = Math.random();
+        colors[i3 + 1] = Math.random();
+        colors[i3 + 2] = Math.random();
+    }
+
+    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particles.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const pMaterial = new THREE.PointsMaterial({
+        size: 0.5,
+        vertexColors: true,
+        blending: THREE.AdditiveBlending,
+        transparent: true
+    });
+
+    particleSystem = new THREE.Points(particles, pMaterial);
+    scene.add(particleSystem);
+
+    // Animate particles
+    const animateParticles = () => {
+        requestAnimationFrame(animateParticles);
+        const positions = particles.attributes.position.array;
+        const velocities = particles.attributes.velocity.array;
+
+        for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            positions[i3] += velocities[i3] * 0.1;
+            positions[i3 + 1] += velocities[i3 + 1] * 0.1;
+            positions[i3 + 2] += velocities[i3 + 2] * 0.1;
+        }
+
+        particles.attributes.position.needsUpdate = true;
+        renderer.render(scene, camera);
+    };
+    animateParticles();
+
+	setTimeout(() => {
+        disposeParticleSystem(particleSystem);
+    }, 2000);
+}
+
+function disposeParticleSystem(particleSystem) {
+    if (particleSystem) {
+        particleSystem.geometry.dispose();
+        particleSystem.material.dispose();
+        scene.remove(particleSystem);
+        particleSystem = null;
+    }
+}
+
 let winnerText;
 
 function createWinnerText(winner) {
@@ -475,14 +571,14 @@ document.addEventListener("wheel", function(event) {
 	camera.position.set(cam.x,cam.y, cam.z );
 });
 
-// document.addEventListener("mousemove", function(event) {
-// 	const rect = renderer.domElement.getBoundingClientRect();
-// 	const mouse = {
-// 		x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
-// 		y: -((event.clientY - rect.top) / rect.height) * 2 + 1
-// 	};
-// 	console.log(mouse);
-// });Math.floor(Math.random() * 70)
+document.addEventListener("mousemove", function(event) {
+	const rect = renderer.domElement.getBoundingClientRect();
+	const mouse = {
+		x: ((event.clientX - rect.left) / rect.width) * 2 - 1,
+		y: -((event.clientY - rect.top) / rect.height) * 2 + 1
+	};
+	// console.log(mouse);
+});
 
 //Menu setup
 

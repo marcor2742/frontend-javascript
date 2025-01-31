@@ -6,6 +6,9 @@
     "/**": {
       "Cache-Control": "public, max-age=0, must-revalidate"
     },
+	"/**/*.js": {
+      "Content-Type": "application/javascript"
+	},
     "/node_modules/three/build/three.module.js": {
       "Content-Type": "application/javascript"
     },

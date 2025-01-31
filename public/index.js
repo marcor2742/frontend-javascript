@@ -3,6 +3,7 @@ import { renderRegister } from './register.js';
 import { renderHome } from './home.js';
 import { setVariables, getVariables } from './var.js';
 import { renderPong } from './pong.js';
+import { renderNotification, initializeWebSocket } from './notification.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     if (getVariables().userId === null) {
@@ -23,7 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
             '/register': () => renderRegister(),
             '/home': () => renderHome(),
             '/mine': () => window.location.href = 'https://minesweeper.online/it/',
-            '/pong': () => renderPong()
+            '/pong': () => renderPong(),
+            '/notifications': () => {
+                renderNotification();
+                initializeWebSocket(); // senza richiamare questo, il websocket partiva sempre
+            }
         };
 
         const path = window.location.pathname;
@@ -41,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li class="nav-item"><a class="nav-link" href="/home" data-link>Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="/mine" data-link>Mine</a></li>
                     <li class="nav-item"><a class="nav-link" href="/pong" data-link>Pong</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/notifications" data-link>Notifications</a></li>
                 </ul>
             </div>
         </nav>

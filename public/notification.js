@@ -1,6 +1,7 @@
 import { setVariables, getVariables } from './var.js';
 
 let messageHistory = [];
+let socket;
 
 async function handleFriendRequest(str_method, user_id, friend_id) {
     console.log(`/----handleFriendRequest ${str_method} notification.js----\\`);
@@ -34,9 +35,9 @@ async function handleFriendRequest(str_method, user_id, friend_id) {
 async function getFriends() {
     const { token, userId } = getVariables();
     console.log("/----getFirends notification.js----\\");
-	console.log("User ID:", userId);
-	console.log("Token:", token);
-	console.log("indirizzo:", `http://127.0.0.1:8002/user/friend?user_id=${userId}&accepted=true`)
+    console.log("User ID:", userId);
+    console.log("Token:", token);
+    console.log("indirizzo:", `http://127.0.0.1:8002/user/friend?user_id=${userId}&accepted=true`)
     try {
         const response = await fetch(
             `http://127.0.0.1:8002/user/friend?user_id=${userId}&accepted=true`,
@@ -116,11 +117,11 @@ function renderNotification() {
     getFriends();
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initializeWebSocket() {
     const { token } = getVariables();
     const wsUrl = `ws://127.0.0.1:8003/ws/user_notifications/?token=${token}`;
 
-    const socket = new WebSocket(wsUrl);
+    socket = new WebSocket(wsUrl);
 
     socket.onmessage = function(event) {
         const message = JSON.parse(event.data);
@@ -152,10 +153,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("token:", token);
         console.log("WebSocket connection is not active");
     };
+}
 
+document.addEventListener('DOMContentLoaded', function() {
     window.renderNotification = renderNotification;
     window.handleFriendRequest = handleFriendRequest;
     window.getFriends = getFriends;
+    window.initializeWebSocket = initializeWebSocket;
 });
 
-export { renderNotification, handleFriendRequest, getFriends };
+export { renderNotification, handleFriendRequest, getFriends, initializeWebSocket };
