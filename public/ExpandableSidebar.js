@@ -204,7 +204,7 @@ function renderChatItem(chat) {
                 // Aggiungi il messaggio alla chat room corrispondente
                 const chatBubble = renderChatBubble({
                     sender: data.sender,
-					date: new Date(msg.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+					date: new Date(data.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
                     message: data.message,
                     isSingleChat: chat.type === 'single'
                 });

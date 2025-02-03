@@ -9,9 +9,9 @@
 		appDiv.innerHTML = `
 			<div class="home">
 				<div class="navbar">
-					<img src="logo.png" alt="logo" class="logo-image" />
+					<img src="public/logo.png" alt="logo" class="logo-image" />
 					<button class="propic-button" id="toggleProfileButton">
-						<img src="propic.jpeg" alt="propic" class="propic-image" />
+						<img src="public/propic.jpeg" alt="propic" class="propic-image" />
 					</button>
 				</div>
 				<div class="undernavbar">
